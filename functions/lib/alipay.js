@@ -52,10 +52,13 @@ async function importPublicKey(pem) {
   );
 }
 
-/** 组装待签名串：除 sign / sign_type 外，按 key 字典序拼接 key=value&... */
+/**
+ * 组装待签名串：按 key 字典序拼接 key=value&...
+ * 支付宝规则：仅排除 sign 参数，sign_type 参与签名（网关按此规则验签）
+ */
 export function buildSignContent(params) {
   return Object.keys(params)
-    .filter((k) => k !== "sign" && k !== "sign_type" && params[k] !== undefined && params[k] !== "")
+    .filter((k) => k !== "sign" && params[k] !== undefined && params[k] !== "")
     .sort()
     .map((k) => `${k}=${params[k]}`)
     .join("&");
