@@ -196,7 +196,7 @@ export function PricingPlans() {
               </ul>
 
               <Link
-                href="/faq#contact"
+                href={`/pay?plan=${plan.id}&billing=${billing}`}
                 className={cn(
                   "mt-8 inline-flex items-center justify-center gap-1.5 rounded-full px-6 py-3 text-sm font-semibold transition-all",
                   plan.featured

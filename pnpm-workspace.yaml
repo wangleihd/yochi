@@ -1,2 +1,5 @@
 allowBuilds:
   sharp: true
+# 仅将根目录作为 workspace 成员；server/ 为独立可部署的支付服务，自行安装依赖
+packages:
+  - "."

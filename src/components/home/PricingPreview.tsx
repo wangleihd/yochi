@@ -113,7 +113,7 @@ export function PricingPreview() {
                 ))}
               </ul>
               <Link
-                href="/pricing"
+                href={`/pay?plan=${plan.id}&billing=monthly`}
                 className={cn(
                   "mt-8 inline-flex items-center justify-center gap-1.5 rounded-full px-6 py-3 text-sm font-semibold transition-all",
                   plan.featured

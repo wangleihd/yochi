@@ -1,0 +1,16 @@
+{
+  "name": "yochi-pay-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "曜驰 Yochi 支付服务：支付宝 / 微信支付下单与回调（真实支付切换用）",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "alipay-sdk": "^4.13.0",
+    "axios": "^1.7.9",
+    "express": "^4.21.2"
+  }
+}

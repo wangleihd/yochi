@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import Link from "next/link";
 import {
   Check,
   Minus,
@@ -315,7 +316,11 @@ export default function PricingPage() {
               </div>
               <div className="grid gap-4 sm:grid-cols-3">
                 {WRITE_PACKS.map((pack) => (
-                  <div key={pack.id} className="card p-6 text-center">
+                  <Link
+                    key={pack.id}
+                    href={`/pay?pack=${pack.id}`}
+                    className="card group p-6 text-center"
+                  >
                     <p className="text-2xl font-black text-slate-900">
                       {pack.count}
                       <span className="text-sm font-medium text-slate-400"> 次</span>
@@ -325,7 +330,10 @@ export default function PricingPage() {
                       ¥{pack.price}
                     </p>
                     <p className="mt-1 text-xs text-slate-400">12 个月有效</p>
-                  </div>
+                    <p className="mt-3 text-xs font-semibold text-brand-500 opacity-0 transition-opacity group-hover:opacity-100">
+                      立即购买 →
+                    </p>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -343,7 +351,11 @@ export default function PricingPage() {
               </div>
               <div className="grid gap-4 sm:grid-cols-3">
                 {IMAGE_PACKS.map((pack) => (
-                  <div key={pack.id} className="card p-6 text-center">
+                  <Link
+                    key={pack.id}
+                    href={`/pay?pack=${pack.id}`}
+                    className="card group p-6 text-center"
+                  >
                     <p className="text-2xl font-black text-slate-900">
                       {pack.count}
                       <span className="text-sm font-medium text-slate-400"> 张</span>
@@ -353,7 +365,10 @@ export default function PricingPage() {
                       ¥{pack.price}
                     </p>
                     <p className="mt-1 text-xs text-slate-400">12 个月有效</p>
-                  </div>
+                    <p className="mt-3 text-xs font-semibold text-brand-500 opacity-0 transition-opacity group-hover:opacity-100">
+                      立即购买 →
+                    </p>
+                  </Link>
                 ))}
               </div>
             </div>
