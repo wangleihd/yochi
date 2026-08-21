@@ -20,6 +20,7 @@ echo "==> 1b/4 整理部署目录（静态文件放入 yochi/ 子目录，与 /y
 rm -rf out-deploy
 mkdir -p out-deploy/yochi
 cp -r out/. out-deploy/yochi/
+cp deploy-assets/_redirects out-deploy/_redirects  # 根路径 302 → /yochi/*
 
 echo "==> 2/4 创建 Pages 项目（已存在则跳过）"
 wrangler pages project create "${PROJECT}" --production-branch main || true
