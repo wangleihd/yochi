@@ -10,6 +10,8 @@ const inter = Inter({
   display: "swap",
 });
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "/yochi";
+
 export const metadata: Metadata = {
   title: "曜驰 Yochi — 多账号小红书种草发布平台",
   description:
@@ -28,6 +30,10 @@ export const metadata: Metadata = {
     description: "曜启光彩，驰传万域。Yochi, spread your light everywhere.",
     type: "website",
     locale: "zh_CN",
+  },
+  icons: {
+    icon: `${basePath}/icon-320.png`,
+    apple: `${basePath}/icon-320.png`,
   },
 };
 
