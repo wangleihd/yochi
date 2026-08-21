@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Lock } from "lucide-react";
 import { PlanPicker } from "@/components/pay/PlanPicker";
 import { ContactForm } from "@/components/pay/ContactForm";
@@ -17,6 +16,9 @@ import type { ContactInfo, Order, OrderItem, PayMethod } from "@/lib/pay/types";
 
 type Step = "plan" | "contact" | "confirm" | "paying" | "result";
 
+/** 模块级守卫：支付宝回跳恢复只执行一次（组件可能被多次挂载） */
+let returnHandledGlobal = false;
+
 const STEPS: { id: Step; label: string }[] = [
   { id: "plan", label: "选择商品" },
   { id: "contact", label: "联系信息" },
@@ -25,20 +27,28 @@ const STEPS: { id: Step; label: string }[] = [
   { id: "result", label: "完成" },
 ];
 
-export function CheckoutFlow() {
-  const searchParams = useSearchParams();
+/**
+ * 同步读取当前 URL 查询参数（客户端）。
+ * 不用 useSearchParams：静态导出 + 硬加载时其就绪时序会吞掉首个 effect，
+ * 导致支付宝回跳恢复逻辑不执行。
+ */
+function getQuery(): URLSearchParams {
+  if (typeof window === "undefined") return new URLSearchParams();
+  return new URLSearchParams(window.location.search);
+}
 
+export function CheckoutFlow() {
   // 从 URL 参数预选商品：/pay?plan=pro&billing=yearly 或 /pay?pack=write-100
   const initialItem = useMemo<OrderItem | null>(() => {
-    const planId = searchParams.get("plan");
+    const q = getQuery();
+    const planId = q.get("plan");
     if (planId) {
-      const billing = searchParams.get("billing") === "monthly" ? "monthly" : "yearly";
+      const billing = q.get("billing") === "monthly" ? "monthly" : "yearly";
       return planToItem(planId, billing);
     }
-    const packId = searchParams.get("pack");
+    const packId = q.get("pack");
     if (packId) return packToItem(packId);
     return null;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [step, setStep] = useState<Step>(initialItem ? "contact" : "plan");
@@ -50,19 +60,23 @@ export function CheckoutFlow() {
   const [submitting, setSubmitting] = useState(false);
 
   // 支付宝回跳恢复：/pay?alipayReturn=1&result=success&out_trade_no=YC...
+  const returnHandled = useRef(false);
   useEffect(() => {
-    if (searchParams.get("alipayReturn") !== "1") return;
+    if (returnHandled.current || returnHandledGlobal) return; // 防止重复执行覆盖已恢复的订单
+    returnHandled.current = true;
+    returnHandledGlobal = true;
+    const q = getQuery();
+    if (q.get("alipayReturn") !== "1") return;
     const saved = sessionStorage.getItem("yochi_order");
     let restored: Order | null = null;
     if (saved) {
       try {
         restored = JSON.parse(saved);
-        sessionStorage.removeItem("yochi_order");
       } catch {
         restored = null;
       }
     }
-    const orderNo = searchParams.get("out_trade_no") || restored?.orderNo || "";
+    const orderNo = q.get("out_trade_no") || restored?.orderNo || "";
     if (restored) setOrder(restored);
     if (orderNo) {
       const fake = restored ?? {
@@ -83,6 +97,7 @@ export function CheckoutFlow() {
           const st = await queryOrder(orderNo, "created");
           if (st === "paid") {
             clearInterval(timer);
+            sessionStorage.removeItem("yochi_order");
             setResult({ success: true });
           } else if (st === "failed" || st === "cancelled" || tries >= 26) {
             clearInterval(timer);
@@ -97,7 +112,7 @@ export function CheckoutFlow() {
       }, 1500);
     } else {
       // 没有订单号，直接用回跳参数展示
-      setResult({ success: searchParams.get("result") === "success" });
+      setResult({ success: q.get("result") === "success" });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
