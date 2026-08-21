@@ -154,6 +154,96 @@ export default function PricingPage() {
                 </tr>
               </thead>
               <tbody>
+                {/* 价格行：月订阅 / 年订阅 / 年付对比优势 */}
+                <tr className="border-b-2 border-brand-100 bg-gradient-to-r from-brand-50/70 via-white to-lime-50/60">
+                  <td className="px-6 py-5 text-sm font-bold text-slate-700">
+                    订阅价格
+                  </td>
+                  {PLANS.map((plan) => {
+                    const save = plan.monthly * 12 - plan.yearly;
+                    return (
+                      <td
+                        key={plan.id}
+                        className={cn(
+                          "px-6 py-5 text-center align-top",
+                          plan.featured && "bg-slate-950"
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            "text-xs font-medium",
+                            plan.featured ? "text-slate-400" : "text-slate-400"
+                          )}
+                        >
+                          月订阅
+                        </div>
+                        <div
+                          className={cn(
+                            "mt-0.5 text-base font-bold",
+                            plan.featured ? "text-white" : "text-slate-900"
+                          )}
+                        >
+                          ¥{plan.monthly.toLocaleString()}
+                          <span
+                            className={cn(
+                              "text-xs font-medium",
+                              plan.featured ? "text-slate-500" : "text-slate-400"
+                            )}
+                          >
+                            {" "}/ 月
+                          </span>
+                        </div>
+                        <div
+                          className={cn(
+                            "mt-2.5 text-xs font-medium",
+                            plan.featured ? "text-slate-400" : "text-slate-400"
+                          )}
+                        >
+                          年订阅
+                        </div>
+                        <div
+                          className={cn(
+                            "mt-0.5 text-lg font-black",
+                            plan.featured ? "text-white" : "text-slate-900"
+                          )}
+                        >
+                          ¥{plan.yearly.toLocaleString()}
+                          <span
+                            className={cn(
+                              "text-xs font-medium",
+                              plan.featured ? "text-slate-500" : "text-slate-400"
+                            )}
+                          >
+                            {" "}/ 年
+                          </span>
+                        </div>
+                        {plan.yearly > 0 ? (
+                          <div className="mt-2">
+                            <span
+                              className={cn(
+                                "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold",
+                                plan.featured
+                                  ? "bg-brand-500/25 text-brand-300"
+                                  : "bg-brand-50 text-brand-700"
+                              )}
+                            >
+                              年付省 ¥{save.toLocaleString()}
+                            </span>
+                          </div>
+                        ) : (
+                          <div
+                            className={cn(
+                              "mt-2 text-xs",
+                              plan.featured ? "text-slate-500" : "text-slate-400"
+                            )}
+                          >
+                            免费版无年付
+                          </div>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
                 {COMPARISON.map((group) => (
                   <Fragment key={group.group}>
                     <tr>
