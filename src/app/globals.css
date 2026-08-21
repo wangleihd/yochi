@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+
+  /* 曜驰 Yochi 品牌色 — 亮绿主色调 */
+  --color-brand-50: #ecfdf5;
+  --color-brand-100: #d1fae5;
+  --color-brand-200: #a7f3d0;
+  --color-brand-300: #6ee7b7;
+  --color-brand-400: #34d399;
+  --color-brand-500: #10b981;
+  --color-brand-600: #059669;
+  --color-brand-700: #047857;
+  --color-brand-800: #065f46;
+  --color-brand-900: #064e3b;
+  --color-brand-950: #022c22;
+
+  --color-lime-500: #84cc16;
+  --color-teal-500: #14b8a6;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-fade-up: fade-up 0.7s ease-out both;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white text-slate-900 antialiased;
+}
+
+/* 渐变文字 */
+.text-gradient-brand {
+  @apply bg-gradient-to-r from-lime-500 via-brand-400 to-teal-500 bg-clip-text text-transparent;
+}
+
+/* 品牌渐变背景 */
+.bg-gradient-brand {
+  @apply bg-gradient-to-br from-lime-400 via-brand-500 to-teal-500;
+}
+
+/* 卡片通用样式 */
+.card {
+  @apply rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300;
+}
+
+.card:hover {
+  @apply -translate-y-1 border-brand-200 shadow-xl shadow-brand-500/10;
+}
+
+/* 页面容器 */
+.container-page {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+/* 节标题 */
+.section-eyebrow {
+  @apply mb-3 inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-4 py-1.5 text-sm font-semibold text-brand-700;
+}
+
+/* 玻璃拟态导航 */
+.glass-nav {
+  @apply border-b border-slate-200/70 bg-white/80 backdrop-blur-xl;
+}
