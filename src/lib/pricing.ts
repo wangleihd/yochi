@@ -2,15 +2,17 @@ export type Plan = {
   id: string;
   name: string;
   nameEn: string;
+  /** 适用人群 */
+  audience: string;
+  /** 价格区卖点 */
   tagline: string;
-  /** 月付价格（元/月），null 表示定制报价 */
-  monthly: number | null;
-  /** 年付折算月价（元/月），null 表示定制报价 */
-  yearly: number | null;
+  /** 月付单价（元/月） */
+  monthly: number;
+  /** 年付总价（元/年）· 付 10 个月用 12 个月 */
+  yearly: number;
   featured?: boolean;
   cta: string;
   highlight: string[];
-  metrics: { label: string; value: string }[];
 };
 
 export const PLANS: Plan[] = [
@@ -18,78 +20,67 @@ export const PLANS: Plan[] = [
     id: "free",
     name: "免费版",
     nameEn: "Free",
-    tagline: "轻量体验，先跑通一次完整发布流程",
+    audience: "首次体验",
+    tagline: "体验 AI 文案、生图和发布流程",
     monthly: 0,
     yearly: 0,
     cta: "免费开始",
-    highlight: ["1 个账号位", "每月 10 篇发布额度", "基础图文模板", "社区支持"],
-    metrics: [
-      { label: "账号位", value: "1" },
-      { label: "月度发布", value: "10 篇" },
-      { label: "素材存储", value: "1 GB" },
+    highlight: [
+      "1 个小红书账号",
+      "每月 5 次发布 / 写文 / 生图",
+      "500 MB 存储空间",
+      "额度与到期提醒",
     ],
   },
   {
     id: "starter",
-    name: "基础版",
+    name: "入门版",
     nameEn: "Starter",
-    tagline: "个人博主与起步团队的日常选择",
+    audience: "个人创作者",
+    tagline: "适合个人号日常更新",
     monthly: 99,
-    yearly: 79,
+    yearly: 990,
     cta: "立即订阅",
     highlight: [
-      "5 个账号位",
-      "每月 200 篇发布额度",
-      "定时发布队列",
-      "数据周报",
-    ],
-    metrics: [
-      { label: "账号位", value: "5" },
-      { label: "月度发布", value: "200 篇" },
-      { label: "素材存储", value: "10 GB" },
+      "3 个小红书账号",
+      "每月 30 次发布 / 写文 / 生图",
+      "1 GB 存储空间",
+      "多账号批量发布",
+      "定时发布",
     ],
   },
   {
     id: "pro",
     name: "专业版",
     nameEn: "Pro",
-    tagline: "多账号矩阵运营团队的效率引擎",
-    monthly: 299,
-    yearly: 239,
+    audience: "代运营、小团队",
+    tagline: "适合代运营和内容团队",
+    monthly: 499,
+    yearly: 4990,
     featured: true,
     cta: "立即订阅",
     highlight: [
-      "20 个账号位",
-      "每月 1000 篇发布额度",
-      "AI 标题与文案助手",
-      "实时数据看板",
-      "5 个团队成员席位",
-    ],
-    metrics: [
-      { label: "账号位", value: "20" },
-      { label: "月度发布", value: "1000 篇" },
-      { label: "素材存储", value: "100 GB" },
+      "10 个小红书账号",
+      "每月 120 次发布 / 写文 / 生图",
+      "2 GB 存储空间",
+      "逐账号发布结果反馈",
+      "优先技术支持",
     ],
   },
   {
     id: "enterprise",
     name: "企业版",
     nameEn: "Enterprise",
-    tagline: "品牌、机构与规模化团队的定制方案",
-    monthly: null,
-    yearly: null,
+    audience: "MCN、机构",
+    tagline: "适合 MCN、品牌机构和规模化投放",
+    monthly: 1599,
+    yearly: 15990,
     cta: "联系销售",
     highlight: [
-      "不限账号位",
-      "专属发布额度",
-      "私有化部署可选",
-      "专属客户成功经理",
-      "SLA 服务保障",
-    ],
-    metrics: [
-      { label: "账号位", value: "不限" },
-      { label: "月度发布", value: "定制" },
-      { label: "部署方式", value: "SaaS / 私有化" },
+      "30 个小红书账号",
+      "每月 360 次发布 / 写文 / 生图",
+      "5 GB 存储空间",
+      "专属客户经理",
     ],
   },
 ];
@@ -101,60 +92,107 @@ export const COMPARISON: {
   rows: { feature: string; cells: [ComparisonCell, ComparisonCell, ComparisonCell, ComparisonCell] }[];
 }[] = [
   {
-    group: "账号与发布",
+    group: "账号与额度",
     rows: [
-      { feature: "绑定小红书账号", cells: [true, true, true, true] },
-      { feature: "账号数量", cells: ["1 个", "5 个", "20 个", "不限"] },
-      { feature: "月度发布额度", cells: ["10 篇", "200 篇", "1000 篇", "定制"] },
-      { feature: "定时发布队列", cells: [false, true, true, true] },
-      { feature: "多平台扩展（抖音 / 微博 / B站）", cells: [false, "即将上线", true, true] },
-      { feature: "草稿多账号批量分发", cells: [false, false, true, true] },
+      { feature: "小红书账号", cells: ["1 个", "3 个", "10 个", "30 个"] },
+      { feature: "发布次数 / 月", cells: ["5 次", "30 次", "120 次", "360 次"] },
+      { feature: "写文次数 / 月", cells: ["5 次", "30 次", "120 次", "360 次"] },
+      { feature: "生图次数 / 月", cells: ["5 张", "30 张", "120 张", "360 张"] },
+      { feature: "存储空间", cells: ["500 MB", "1 GB", "2 GB", "5 GB"] },
     ],
   },
   {
-    group: "内容与 AI",
+    group: "核心功能",
     rows: [
-      { feature: "图文模板库", cells: ["基础", "基础", "高级", "定制"] },
-      { feature: "素材云存储", cells: ["1 GB", "10 GB", "100 GB", "不限"] },
-      { feature: "AI 标题生成", cells: [false, false, true, true] },
-      { feature: "AI 文案润色与改写", cells: [false, false, true, true] },
-      { feature: "标签（话题）智能推荐", cells: [false, true, true, true] },
+      { feature: "爆款文案生成", cells: [true, true, true, true] },
+      { feature: "AI 图片生成", cells: [true, true, true, true] },
+      { feature: "多账号批量发布", cells: [false, true, true, true] },
+      { feature: "定时发布", cells: [false, true, true, true] },
+      { feature: "逐账号发布结果", cells: [false, true, true, true] },
     ],
   },
   {
-    group: "数据与协作",
+    group: "服务与支持",
     rows: [
-      { feature: "发布数据统计", cells: [true, true, true, true] },
-      { feature: "数据周报", cells: [false, true, true, true] },
-      { feature: "实时数据看板", cells: [false, false, true, true] },
-      { feature: "团队成员席位", cells: ["1 人", "2 人", "5 人", "不限"] },
-      { feature: "内容审核流", cells: [false, false, true, true] },
-      { feature: "专属客户成功经理", cells: [false, false, false, true] },
+      { feature: "额度与到期提醒", cells: [true, true, true, true] },
+      { feature: "优先技术支持", cells: [false, false, true, true] },
+      { feature: "专属客户经理", cells: [false, false, false, true] },
     ],
   },
+];
+
+/** 写文次数包（独立购买，不占用套餐额度） */
+export const WRITE_PACKS = [
+  { id: "write-30", count: 30, price: 39 },
+  { id: "write-100", count: 100, price: 99 },
+  { id: "write-300", count: 300, price: 259 },
+];
+
+/** 生图次数包（独立购买，不占用套餐额度） */
+export const IMAGE_PACKS = [
+  { id: "image-30", count: 30, price: 59 },
+  { id: "image-100", count: 100, price: 169 },
+  { id: "image-300", count: 300, price: 469 },
+];
+
+export const PACK_RULES = [
+  "可单独购买，也可叠加购买",
+  "购买后 12 个月内有效",
+  "写文和生图分开计费，缺什么补什么",
+  "次数用完后可再次购买，不影响基础套餐周期",
+];
+
+/** 年付优势 · 付 10 个月，用 12 个月 */
+export const YEARLY_SAVINGS = [
+  { plan: "入门版", monthly: 99, yearly: 990, save: 198 },
+  { plan: "专业版", monthly: 499, yearly: 4990, save: 998 },
+  { plan: "企业版", monthly: 1599, yearly: 15990, save: 3198 },
+];
+
+export const YEARLY_SLOGAN = "年付立享“付 10 个月，用 12 个月”，最高省 ¥3,198";
+
+/** 推荐购买组合 */
+export const RECOMMENDATIONS = [
   {
-    group: "服务与合规",
-    rows: [
-      { feature: "人工客服支持", cells: ["社区", "工单", "工单 + 企微", "专属 1v1"] },
-      { feature: "数据加密存储", cells: [true, true, true, true] },
-      { feature: "私有化部署", cells: [false, false, false, true] },
-      { feature: "SLA 服务保障", cells: [false, false, false, true] },
-    ],
+    type: "个人创作者",
+    plan: "入门版",
+    extra: "30 次写文包",
+    desc: "个人号日常更新，写文次数不够时灵活补充。",
+  },
+  {
+    type: "代运营团队",
+    plan: "专业版",
+    extra: "100 次写文包 + 100 张生图包",
+    desc: "多账号矩阵运营，内容产能按需增量。",
+  },
+  {
+    type: "MCN / 机构",
+    plan: "企业版",
+    extra: "300 次写文包 + 300 张生图包",
+    desc: "规模化投放，全量产能保障。",
   },
 ];
 
 export const PRICING_FAQS = [
   {
+    q: "年付“付 10 个月，用 12 个月”怎么算？",
+    a: "年付一次性支付 10 个月的费用，即可使用 12 个月，折合月价更低：入门版省 ¥198、专业版省 ¥998、企业版省 ¥3,198。年付用户未使用部分可按比例退款。",
+  },
+  {
+    q: "写文次数和生图次数如何扣减？",
+    a: "两类次数独立扣减、互不影响：写文次数用于生成或改写文案，生图次数用于生成或编辑图片。每月账期结束时重新发放当月额度。",
+  },
+  {
+    q: "每月额度用完了怎么办？",
+    a: "可以单独购买写文或生图次数包（30 / 100 / 300 次），购买后 12 个月内有效，不强制升级套餐。基础套餐作为稳定产能，次数包作为灵活增量。",
+  },
+  {
+    q: "次数包可以叠加购买吗？",
+    a: "可以。次数包可单独购买也可叠加，次数用完后可再次购买，不影响基础套餐的计费周期。",
+  },
+  {
     q: "订阅后可以随时取消吗？",
-    a: "可以。月付与年付均支持随时取消，取消后服务保留至当期结束，不会立刻中断你的发布计划。年付用户未使用部分可按比例退款。",
-  },
-  {
-    q: "账号额度不够用怎么办？",
-    a: "可在「工作台 → 订阅」中随时升级套餐或增购账号位与发布额度包，按天折算费用，即时生效。",
-  },
-  {
-    q: "企业版支持私有化部署吗？",
-    a: "支持。企业版提供 SaaS 与私有化部署两种形态，私有化部署支持内网环境与专属数据合规要求，具体可联系销售获取方案。",
+    a: "可以。月付与年付均支持随时取消，取消后服务保留至当期结束，不会立刻中断你的发布计划。",
   },
   {
     q: "可以开发票吗？",

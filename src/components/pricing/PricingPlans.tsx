@@ -8,6 +8,11 @@ import { cn } from "@/lib/utils";
 
 type Billing = "monthly" | "yearly";
 
+/** 折合月价 = 年付总价 / 12 */
+function monthlyEquivalent(yearly: number) {
+  return Math.round((yearly / 12) * 10) / 10;
+}
+
 export function PricingPlans() {
   const [billing, setBilling] = useState<Billing>("yearly");
 
@@ -39,15 +44,15 @@ export function PricingPlans() {
         >
           年付
           <span className="rounded-full bg-gradient-to-r from-lime-400 to-brand-500 px-2.5 py-0.5 text-xs font-bold text-white">
-            省 20%
+            付 10 用 12
           </span>
         </button>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-4">
         {PLANS.map((plan) => {
-          const price =
-            billing === "yearly" ? plan.yearly : plan.monthly;
+          const isYearly = billing === "yearly";
+          const save = plan.monthly * 12 - plan.yearly;
           return (
             <div
               key={plan.id}
@@ -79,7 +84,7 @@ export function PricingPlans() {
                   plan.featured ? "text-brand-300" : "text-slate-400"
                 )}
               >
-                {plan.nameEn}
+                {plan.nameEn} · {plan.audience}
               </p>
               <p
                 className={cn(
@@ -91,56 +96,78 @@ export function PricingPlans() {
               </p>
 
               <div className="mt-6">
-                {price === null ? (
-                  <p
-                    className={cn(
-                      "text-4xl font-black",
-                      plan.featured ? "text-white" : "text-slate-900"
+                {isYearly ? (
+                  <div>
+                    <div className="flex items-baseline gap-1">
+                      <span
+                        className={cn(
+                          "text-4xl font-black",
+                          plan.featured ? "text-white" : "text-slate-900"
+                        )}
+                      >
+                        ¥{plan.yearly.toLocaleString()}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-sm",
+                          plan.featured ? "text-slate-500" : "text-slate-400"
+                        )}
+                      >
+                        / 年
+                      </span>
+                    </div>
+                    {plan.yearly > 0 ? (
+                      <p
+                        className={cn(
+                          "mt-1.5 text-xs",
+                          plan.featured ? "text-slate-500" : "text-slate-400"
+                        )}
+                      >
+                        折合 ¥{monthlyEquivalent(plan.yearly)}/月
+                        <span className="ml-1.5 font-semibold text-brand-500">
+                          省 ¥{save.toLocaleString()}
+                        </span>
+                      </p>
+                    ) : (
+                      <p
+                        className={cn(
+                          "mt-1.5 text-xs",
+                          plan.featured ? "text-slate-500" : "text-slate-400"
+                        )}
+                      >
+                        永久免费额度
+                      </p>
                     )}
-                  >
-                    定制
-                  </p>
+                  </div>
                 ) : (
-                  <div className="flex items-baseline gap-1">
-                    <span
+                  <div>
+                    <div className="flex items-baseline gap-1">
+                      <span
+                        className={cn(
+                          "text-4xl font-black",
+                          plan.featured ? "text-white" : "text-slate-900"
+                        )}
+                      >
+                        ¥{plan.monthly.toLocaleString()}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-sm",
+                          plan.featured ? "text-slate-500" : "text-slate-400"
+                        )}
+                      >
+                        / 月
+                      </span>
+                    </div>
+                    <p
                       className={cn(
-                        "text-4xl font-black",
-                        plan.featured ? "text-white" : "text-slate-900"
-                      )}
-                    >
-                      ¥{price}
-                    </span>
-                    <span
-                      className={cn(
-                        "text-sm",
+                        "mt-1.5 text-xs",
                         plan.featured ? "text-slate-500" : "text-slate-400"
                       )}
                     >
-                      / 月
-                    </span>
+                      按月支付，随时可取消
+                    </p>
                   </div>
-                )}
-                {price !== null && price > 0 && (
-                  <p
-                    className={cn(
-                      "mt-1.5 text-xs",
-                      plan.featured ? "text-slate-500" : "text-slate-400"
-                    )}
-                  >
-                    {billing === "yearly"
-                      ? `按年支付，¥${(price * 12).toLocaleString()}/年`
-                      : "按月支付，随时可取消"}
-                  </p>
-                )}
-                {price === null && (
-                  <p
-                    className={cn(
-                      "mt-1.5 text-xs",
-                      plan.featured ? "text-slate-500" : "text-slate-400"
-                    )}
-                  >
-                    按需报价，提供专属方案
-                  </p>
                 )}
               </div>
 

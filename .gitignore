@@ -35,3 +35,7 @@ next-env.d.ts
 
 # pnpm 项目本地 store
 .pnpm-store/
+
+# 意外生成的锁文件（本项目使用 pnpm）
+yarn.lock
+package-lock.json

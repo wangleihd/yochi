@@ -18,7 +18,7 @@ export function PricingPreview() {
               <span className="text-gradient-brand"> 按需升级</span>
             </>
           }
-          subtitle="从免费体验到大矩阵运营，总有一档适合你的阶段。随时升级，随时取消。"
+          subtitle="写文、生图、发布分开计费，缺什么补什么。从免费体验到大矩阵运营，总有一档适合你。"
         />
         <div className="grid gap-6 lg:grid-cols-3">
           {plans.map((plan) => (
@@ -32,7 +32,7 @@ export function PricingPreview() {
               )}
             >
               {plan.featured && (
-                <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-lime-400 to-brand-500 px-4 py-1 text-xs font-bold text-white shadow-lg">
+                <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-lime-400 to-brand-500 px-4 py-1 text-xs font-bold text-white shadow-lg">
                   最受欢迎
                 </span>
               )}
@@ -78,6 +78,17 @@ export function PricingPreview() {
                   / 月
                 </span>
               </div>
+              {plan.monthly > 0 && (
+                <p
+                  className={cn(
+                    "mt-1 text-xs",
+                    plan.featured ? "text-slate-500" : "text-slate-400"
+                  )}
+                >
+                  年付 ¥{plan.yearly.toLocaleString()}/年 · 省 ¥
+                  {(plan.monthly * 12 - plan.yearly).toLocaleString()}
+                </p>
+              )}
               <ul className="mt-6 flex-1 space-y-3">
                 {plan.highlight.map((f) => (
                   <li key={f} className="flex items-start gap-2.5 text-sm">
@@ -121,7 +132,7 @@ export function PricingPreview() {
             href="/pricing"
             className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700"
           >
-            查看全部套餐与详细对比
+            查看全部套餐、次数包与详细对比
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
