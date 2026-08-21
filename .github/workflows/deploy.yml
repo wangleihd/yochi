@@ -38,13 +38,15 @@ jobs:
 
       - name: Deploy to gh-pages
         run: |
+          # 先备份构建产物（切换分支会清空工作区）
+          cp -r out /tmp/site-out
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages --depth=1 || true
           git checkout -B gh-pages origin/gh-pages 2>/dev/null || git checkout --orphan gh-pages
           find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name 'node_modules' -exec rm -rf {} +
-          cp -r out/. .
-          rm -rf out
+          cp -r /tmp/site-out/. .
+          rm -rf /tmp/site-out
           # 让 Pages 跳过 Jekyll，正常服务 _next 静态资源
           touch .nojekyll
           git add -A
