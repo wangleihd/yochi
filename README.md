@@ -33,6 +33,16 @@ pnpm build      # 输出 .next 静态产物
 pnpm start      # 本地预览生产版本
 ```
 
+## 线上部署（GitHub Pages）
+
+**线上地址：https://wangleihd.github.io/yochi/**（仓库：github.com/wangleihd/yochi）
+
+- 采用 Next.js 静态导出（`output: "export"`，`basePath: /yochi`），产物推送到 `gh-pages` 分支
+- 已配置 `.nojekyll`，确保 GitHub Pages 正常服务 `_next` 静态资源
+- **自动部署**：`.github/workflows/deploy.yml` 会在每次推送到 `main` 时自动构建并更新 `gh-pages`（Node 24 + pnpm 11）
+- 手动更新：`git push origin main` 即可触发自动部署
+- 修改部署路径：如改用自定义域名，调整 `next.config.ts` 中的 `basePath` 与域名解析即可
+
 ## 目录结构
 
 ```
