@@ -6,6 +6,8 @@ import type { PayMethod } from "@/lib/pay/types";
 type MethodPickerProps = {
   value: PayMethod;
   onChange: (m: PayMethod) => void;
+  /** 真实支付模式：微信未开通，支付宝跳转官方收银台 */
+  real?: boolean;
 };
 
 function AlipayMark({ className }: { className?: string }) {
@@ -34,7 +36,7 @@ function WechatMark({ className }: { className?: string }) {
   );
 }
 
-export function MethodPicker({ value, onChange }: MethodPickerProps) {
+export function MethodPicker({ value, onChange, real = false }: MethodPickerProps) {
   const methods: { id: PayMethod; name: string; desc: string; mark: React.ReactNode }[] = [
     {
       id: "alipay",
@@ -90,7 +92,9 @@ export function MethodPicker({ value, onChange }: MethodPickerProps) {
         })}
       </div>
       <p className="mt-4 text-xs text-slate-400">
-        当前为演示环境，将展示模拟收银台；接入真实支付后，将唤起支付宝 / 微信官方收银台。
+        {real
+          ? "微信支付接入中，暂请使用支付宝；选择支付宝后将跳转官方收银台完成支付。"
+          : "当前为演示环境，将展示模拟收银台；接入真实支付后，将唤起支付宝 / 微信官方收银台。"}
       </p>
     </div>
   );

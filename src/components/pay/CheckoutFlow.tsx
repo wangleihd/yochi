@@ -49,6 +49,59 @@ export function CheckoutFlow() {
   const [result, setResult] = useState<{ success: boolean } | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // 支付宝回跳恢复：/pay?alipayReturn=1&result=success&out_trade_no=YC...
+  useEffect(() => {
+    if (searchParams.get("alipayReturn") !== "1") return;
+    const saved = sessionStorage.getItem("yochi_order");
+    let restored: Order | null = null;
+    if (saved) {
+      try {
+        restored = JSON.parse(saved);
+        sessionStorage.removeItem("yochi_order");
+      } catch {
+        restored = null;
+      }
+    }
+    const orderNo = searchParams.get("out_trade_no") || restored?.orderNo || "";
+    if (restored) setOrder(restored);
+    if (orderNo) {
+      const fake = restored ?? {
+        orderNo,
+        item: { kind: "plan" as const, id: "", name: "支付宝订单", periodLabel: "", price: 0, priceText: "—" },
+        contact: { email: "", phone: "" },
+        method: "alipay" as const,
+        amount: 0,
+        createdAt: new Date().toISOString(),
+        expiresInMin: 15,
+      };
+      if (!restored) setOrder(fake);
+      // 轮询后端确认真实状态（支付宝通知可能稍慢，最多等 ~40s）
+      let tries = 0;
+      const timer = setInterval(async () => {
+        tries += 1;
+        try {
+          const st = await queryOrder(orderNo, "created");
+          if (st === "paid") {
+            clearInterval(timer);
+            setResult({ success: true });
+          } else if (st === "failed" || st === "cancelled" || tries >= 26) {
+            clearInterval(timer);
+            setResult({ success: false });
+          }
+        } catch {
+          if (tries >= 26) {
+            clearInterval(timer);
+            setResult({ success: false });
+          }
+        }
+      }, 1500);
+    } else {
+      // 没有订单号，直接用回跳参数展示
+      setResult({ success: searchParams.get("result") === "success" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (result) setStep("result");
   }, [result]);
@@ -65,9 +118,22 @@ export function CheckoutFlow() {
     try {
       const created = await createOrder(item, contact, method);
       setOrder(created);
+      if (isRealPay) {
+        // 真实支付：保存订单（回跳后恢复），支付宝模式跳转收银台
+        sessionStorage.setItem("yochi_order", JSON.stringify(created));
+        if (created.payParams?.redirectUrl) {
+          window.location.href = created.payParams.redirectUrl;
+          return;
+        }
+        if (method === "wechat") {
+          alert("微信支付暂未开通，请使用支付宝完成支付。");
+          setStep("confirm");
+          return;
+        }
+      }
       setStep("paying");
-    } catch {
-      alert("下单失败，请稍后重试");
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "下单失败，请稍后重试");
     } finally {
       setSubmitting(false);
     }
@@ -180,7 +246,7 @@ export function CheckoutFlow() {
         {step === "confirm" && item && (
           <div className="grid gap-8 lg:grid-cols-5">
             <div className="space-y-6 lg:col-span-3">
-              <MethodPicker value={method} onChange={setMethod} />
+              <MethodPicker value={method} onChange={setMethod} real={isRealPay} />
               <div className="flex items-center justify-between gap-3 pt-2">
                 <button
                   type="button"
@@ -201,7 +267,11 @@ export function CheckoutFlow() {
                   )}
                 >
                   <Lock className="size-4" />
-                  {submitting ? "提交中…" : `提交订单并支付 ${item.price === 0 ? "¥0" : item.priceText}`}
+                  {submitting
+                    ? "提交中…"
+                    : isRealPay && method === "alipay"
+                      ? "提交订单并前往支付宝"
+                      : `提交订单并支付 ${item.price === 0 ? "¥0" : item.priceText}`}
                 </button>
               </div>
             </div>
