@@ -9,7 +9,7 @@ set -euo pipefail
 
 PROJECT="yochi"
 # 需替换为实际 pages.dev 域名（首次部署后 wrangler 会提示）
-PAGES_DOMAIN="${PAGES_DOMAIN:-https://yochi.pages.dev}"
+PAGES_DOMAIN="${PAGES_DOMAIN:-https://yochi-9uz.pages.dev}"
 
 echo "==> 1/4 构建前端（真实支付模式）"
 NEXT_PUBLIC_PAY_MODE=real \

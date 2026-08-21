@@ -1,11 +1,8 @@
 # Cloudflare Pages 配置（wrangler）
-# 用法：wrangler pages deploy out --project-name yochi
-# （functions/ 目录会被自动识别为 Pages Functions）
-
 name = "yochi"
 pages_build_output_dir = "out"
 
-# 非敏感环境变量（敏感密钥用：wrangler pages secret put <KEY> --project-name yochi）
+# 非敏感环境变量（与 Pages 项目配置保持一致；敏感密钥通过 API/控制台设置）
 [vars]
-PAY_BASE_URL = "https://yochi.pages.dev"
-FRONTEND_BASE = "https://yochi.pages.dev/yochi"
+PAY_BASE_URL = "https://yochi-9uz.pages.dev"
+FRONTEND_BASE = "https://yochi-9uz.pages.dev/yochi"
