@@ -2,8 +2,8 @@
  * POST /api/orders 创建订单（支付宝电脑网页支付）
  * body: { item: {kind,id,name,periodLabel,price}, contact: {email,phone}, method: "alipay"|"wechat" }
  */
-import { json, genOrderNo, readJson } from "../lib/util.js";
-import { createPagePay } from "../lib/alipay-service.js";
+import { json, genOrderNo, readJson } from "../../lib/util.js";
+import { createPagePay } from "../../lib/alipay-service.js";
 
 export async function onRequestPost(context) {
   const body = await readJson(context.request);

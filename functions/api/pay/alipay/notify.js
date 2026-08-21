@@ -4,7 +4,7 @@
  * - 支付成功后通过 passback_params 触发权益开通（当前记录日志，可接入邮件/短信等）
  * - 必须返回 success，否则支付宝会重试
  */
-import { verifyNotifyParams, parseAlipayParams } from "../../lib/alipay-service.js";
+import { verifyNotifyParams, parseAlipayParams } from "../../../lib/alipay-service.js";
 
 export async function onRequestPost(context) {
   try {

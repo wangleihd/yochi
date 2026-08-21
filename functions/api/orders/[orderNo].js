@@ -1,8 +1,8 @@
 /**
  * GET /api/orders/:orderNo 查询订单状态（实时查询支付宝）
  */
-import { json } from "../lib/util.js";
-import { queryTrade } from "../lib/alipay-service.js";
+import { json } from "../../lib/util.js";
+import { queryTrade } from "../../lib/alipay-service.js";
 
 export async function onRequestGet(context) {
   const { orderNo } = context.params;

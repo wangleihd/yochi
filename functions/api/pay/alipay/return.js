@@ -2,7 +2,7 @@
  * GET /api/pay/alipay/return 支付宝电脑网页支付同步回跳
  * - 验签后 302 到前端结果页（/yochi/pay?alipayReturn=1&out_trade_no=...&result=success|failed）
  */
-import { verifyNotifyParams, parseAlipayParams } from "../../lib/alipay-service.js";
+import { verifyNotifyParams, parseAlipayParams } from "../../../lib/alipay-service.js";
 
 export async function onRequestGet(context) {
   const params = parseAlipayParams(context.request.url ? new URL(context.request.url).searchParams : new URLSearchParams());
