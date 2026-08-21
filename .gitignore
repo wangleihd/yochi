@@ -44,3 +44,6 @@ package-lock.json
 server/node_modules/
 
 .dev.vars
+
+# 部署产物
+out-deploy/

@@ -16,6 +16,11 @@ NEXT_PUBLIC_PAY_MODE=real \
 NEXT_PUBLIC_PAY_API_BASE="${PAGES_DOMAIN}" \
 pnpm build
 
+echo "==> 1b/4 整理部署目录（静态文件放入 yochi/ 子目录，与 /yochi/* 路径对应）"
+rm -rf out-deploy
+mkdir -p out-deploy/yochi
+cp -r out/. out-deploy/yochi/
+
 echo "==> 2/4 创建 Pages 项目（已存在则跳过）"
 wrangler pages project create "${PROJECT}" --production-branch main || true
 
@@ -26,7 +31,7 @@ wrangler pages project edit "${PROJECT}" \
   --var ALIPAY_GATEWAY:"https://openapi.alipay.com/gateway.do" || echo "  （如不支持 --var，请在 Cloudflare 控制台手动配置）"
 
 echo "==> 4/4 部署（静态产物 + functions）"
-wrangler pages deploy out --project-name "${PROJECT}"
+wrangler pages deploy out-deploy --project-name "${PROJECT}"
 
 echo ""
 echo "部署完成！"
